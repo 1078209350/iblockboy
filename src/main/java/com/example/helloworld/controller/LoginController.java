@@ -2,10 +2,8 @@ package com.example.helloworld.controller;
 
 import com.example.helloworld.entity.User;
 import com.example.helloworld.mapper.LoginMapper;
-import com.example.helloworld.mapper.OrderMapper;
 import com.example.helloworld.utils.JwtUtils;
 import com.example.helloworld.utils.Result;
-import io.jsonwebtoken.Jwt;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +22,8 @@ public class LoginController {
     @ApiOperation("用户登录")
     @PostMapping("/login")
     public Result login(@RequestBody User user){
-        List<User> res = loginMapper.selectUser(user.getUserName());
+        System.out.println(user);
+        List<User> res = loginMapper.selectUser(user.getName());
         if (res == null || res.size() == 0){
             return Result.error().message("未查询到用户");
         } else {
@@ -32,10 +31,29 @@ public class LoginController {
             if (userList == null || userList.size() == 0){
                 return Result.error().message("密码有误，请重试！");
             } else {
-                String token = JwtUtils.generateToken(user.getUserName());
+                String token = JwtUtils.generateToken(user.getName());
                 return Result.ok().data("token", token).data("info", userList.get(0));
             }
         }
+    }
+
+    @ApiOperation("用户注册")
+    @PostMapping("/register")
+    public Result register(@RequestBody User user){
+        System.out.println(user);
+        return Result.ok().data("info", "优秀啊");
+//        List<User> res = loginMapper.selectUser(user.getName());
+//        if (res == null || res.size() == 0){
+//            return Result.error().message("未查询到用户");
+//        } else {
+//            List<User> userList = loginMapper.login(user);
+//            if (userList == null || userList.size() == 0){
+//                return Result.error().message("密码有误，请重试！");
+//            } else {
+//                String token = JwtUtils.generateToken(user.getName());
+//                return Result.ok().data("token", token).data("info", userList.get(0));
+//            }
+//        }
     }
 
     @ApiOperation("用户退出")

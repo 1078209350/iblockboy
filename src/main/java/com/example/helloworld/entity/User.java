@@ -14,7 +14,7 @@ public class User {
     /**
      * 用户名
      */
-    String userName;
+    String name;
 
     /**
      * 密码
@@ -39,12 +39,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -75,16 +75,12 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }
-
-
-
-
 }
 
 

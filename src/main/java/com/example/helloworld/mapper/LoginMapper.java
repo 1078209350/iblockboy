@@ -11,7 +11,7 @@ public interface LoginMapper {
     /**
      * 验证该用户是否存在
      */
-    public List<User> selectUser(@Param("userName") String userName);
+    public List<User> selectUser(@Param("name") String name);
 
     /**
      * 登录
