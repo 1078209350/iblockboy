@@ -40,20 +40,17 @@ public class LoginController {
     @ApiOperation("用户注册")
     @PostMapping("/register")
     public Result register(@RequestBody User user){
-        System.out.println(user);
-        return Result.ok().data("info", "优秀啊");
-//        List<User> res = loginMapper.selectUser(user.getName());
-//        if (res == null || res.size() == 0){
-//            return Result.error().message("未查询到用户");
-//        } else {
-//            List<User> userList = loginMapper.login(user);
-//            if (userList == null || userList.size() == 0){
-//                return Result.error().message("密码有误，请重试！");
-//            } else {
-//                String token = JwtUtils.generateToken(user.getName());
-//                return Result.ok().data("token", token).data("info", userList.get(0));
-//            }
-//        }
+        List<User> sel = loginMapper.selectUser(user.getName());
+        if (sel.size() == 1) {
+            return Result.error().message("此用户名已被注册！");
+        } else {
+            int res = loginMapper.register(user);
+            if (res > 0){
+                return Result.ok().data("result", true);
+            } else {
+                return Result.error().message("系统错误，请联系管理员！");
+            }
+        }
     }
 
     @ApiOperation("用户退出")

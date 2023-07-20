@@ -3,6 +3,9 @@ package com.example.helloworld.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author guantong
+ */
 public class Result {
 
     private Boolean success;

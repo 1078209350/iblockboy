@@ -18,4 +18,9 @@ public interface LoginMapper {
      * */
     public List<User> login(@Param("user") User user);
 
+    /**
+     * 注册
+     * */
+    public int register(@Param("user") User user);
+
 }

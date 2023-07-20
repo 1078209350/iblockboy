@@ -11,4 +11,10 @@
     <select id="login" resultType="com.example.helloworld.entity.User">
         select * from `user` where name = #{user.name} and password = #{user.password}
     </select>
+
+    <insert id="register" parameterType="list">
+        insert into `user` (name, password) values (#{user.name}, #{user.password})
+    </insert>
+
+
 </mapper>
