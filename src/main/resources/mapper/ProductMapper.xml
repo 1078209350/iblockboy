@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.helloworld.mapper.ProductMapper">
+
+    <select id="queryList" parameterType="com.example.helloworld.utils.PageParam" resultType="com.example.helloworld.entity.Product">
+        select * from product
+    </select>
+
+    <insert id="addProduct" parameterType="com.example.helloworld.entity.Product">
+        insert into `product` (product_name, product_price, product_type, product_number)
+        values
+        (#{product.productName}, #{product.productPrice}, #{product.productType}, #{product.productNumber})
+    </insert>
+</mapper>

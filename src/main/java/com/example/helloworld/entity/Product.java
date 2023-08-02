@@ -30,6 +30,20 @@ public class Product {
      */
     private String productImg;
 
+    /**
+     * 产品库存
+     * @return
+     */
+    private String productNumber;
+
+    public String getProductNumber() {
+        return productNumber;
+    }
+
+    public void setProductNumber(String productNumber) {
+        this.productNumber = productNumber;
+    }
+
     public Integer getProductId() {
         return productId;
     }
@@ -78,6 +92,7 @@ public class Product {
                 ", productPrice=" + productPrice +
                 ", productType='" + productType + '\'' +
                 ", productImg='" + productImg + '\'' +
+                ", productNumber='" + productNumber + '\'' +
                 '}';
     }
 }
