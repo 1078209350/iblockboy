@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +26,18 @@ public class ProductController {
 
     @ApiOperation("查询所有产品信息")
     @GetMapping("/queryList")
-    public Result queryList(PageParam pageParam){
+    public Result queryList(PageParam pageParam,
+                            @RequestParam(required=false) String productName,
+                            @RequestParam(required=false) String productPrice,
+                            @RequestParam(required=false) String productType){
         System.out.println(pageParam);
-//        Map<String, Object> data = new HashMap();
-//        data.put("currIndex", (pageParam.getPage()-1)*pageParam.getSize());
-//        data.put("pageSize", pageParam.getSize());
+        System.out.println(productName);
+        System.out.println(productPrice);
+        System.out.println(productType);
         PageHelper.startPage(pageParam.getPage(), pageParam.getSize());
-        List<Product> res = productMapper.queryList();
+        List<Product> res = productMapper.queryList(productName, productPrice, productType);
         PageInfo pageInfo = new PageInfo<>(res);
-        return Result.ok().data("info", pageInfo);
+        return Result.ok().data("result", pageInfo);
     }
 
     @ApiOperation("新增产品")
@@ -41,6 +45,34 @@ public class ProductController {
     public Result addProduct(@RequestBody Product product){
         System.out.println(product);
         Integer res = productMapper.addProduct(product);
-        return Result.ok().data("info", res);
+        if (res == 1){
+            return Result.ok().data("info", "添加成功");
+        } else {
+            return Result.error().data("info", "添加失败");
+        }
+
+    }
+
+    @ApiOperation("修改产品")
+    @PostMapping("/changeProduct")
+    public Result changeProduct(@RequestBody Product product){
+        System.out.println(product);
+        Integer res = productMapper.changeProduct(product);
+        if (res == 1){
+            return Result.ok().data("info", "修改成功");
+        } else {
+            return Result.error().data("info", "修改失败");
+        }
+    }
+
+    @ApiOperation("删除产品")
+    @PostMapping("/deleteProduct")
+    public Result deleteProduct(@RequestBody Product product){
+        Integer res = productMapper.deleteProduct(product);
+        if (res == 1){
+            return Result.ok().data("info", "删除成功");
+        } else {
+            return Result.error().data("info", "删除失败");
+        }
     }
 }
