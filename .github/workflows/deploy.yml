@@ -1,0 +1,82 @@
+name: Deploy Backend to Tencent Cloud
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Run tests and package
+        run: |
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Tencent Cloud TCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.TCR_REGISTRY }}
+          username: ${{ secrets.TCR_USERNAME }}
+          password: ${{ secrets.TCR_PASSWORD }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.TCR_REGISTRY }}/${{ secrets.TCR_NAMESPACE }}/${{ secrets.TCR_REPOSITORY }}:${{ github.sha }}
+            ${{ secrets.TCR_REGISTRY }}/${{ secrets.TCR_NAMESPACE }}/${{ secrets.TCR_REPOSITORY }}:latest
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.SERVER_PORT }}" "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload compose file
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.SERVER_PORT }}" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "mkdir -p '${{ secrets.SERVER_APP_DIR }}'"
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.SERVER_PORT }}" docker-compose.prod.yml "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_APP_DIR }}/docker-compose.prod.yml"
+
+      - name: Deploy backend
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.SERVER_PORT }}" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << 'EOF'
+          set -e
+          cd "${{ secrets.SERVER_APP_DIR }}"
+
+          docker network inspect iblackboy-net >/dev/null 2>&1 || docker network create iblackboy-net
+
+          cat > .env << 'ENVEOF'
+          BACKEND_IMAGE=${{ secrets.TCR_REGISTRY }}/${{ secrets.TCR_NAMESPACE }}/${{ secrets.TCR_REPOSITORY }}:${{ github.sha }}
+          MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+          SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          JAVA_OPTS=${{ secrets.JAVA_OPTS }}
+          ENVEOF
+
+          echo "${{ secrets.TCR_PASSWORD }}" | docker login "${{ secrets.TCR_REGISTRY }}" -u "${{ secrets.TCR_USERNAME }}" --password-stdin
+          docker compose -f docker-compose.prod.yml pull backend
+          docker compose -f docker-compose.prod.yml up -d mysql backend
+          docker image prune -f
+          EOF
