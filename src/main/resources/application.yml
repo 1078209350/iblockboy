@@ -14,3 +14,20 @@ pagehelper:
   support-methods-arguments: true
   params: count=countSql
 
+# Flyway 数据库版本管理
+spring:
+  flyway:
+    enabled: true
+    # 迁移脚本位置
+    locations: classpath:db/migration
+    # 迁移脚本编码
+    encoding: UTF-8
+    # 版本历史表名
+    table: flyway_schema_history
+    # 开发环境：如果数据库不是空的，自动执行 baseline（第一次用）
+    baseline-on-migrate: true
+    # 生产环境建议设为 false，防止意外清库
+    clean-disabled: true
+    # 验证迁移脚本是否正确
+    validate-on-migrate: true
+
