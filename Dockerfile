@@ -1,12 +1,14 @@
 FROM maven:3.8.6-eclipse-temurin-8 AS build
 WORKDIR /app
 
+# 先复制 pom.xml，单独下载依赖（这层可以缓存！）
 COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw mvnw
+RUN mvn dependency:go-offline -B
+
+# 再复制源代码
 COPY src src
 
-RUN chmod +x mvnw && MAVEN_CONFIG= ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests -B
 
 FROM eclipse-temurin:8-jre
 WORKDIR /app
