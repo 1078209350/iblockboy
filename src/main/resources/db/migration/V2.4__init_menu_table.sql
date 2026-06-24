@@ -1,0 +1,23 @@
+CREATE TABLE gtStore.menu (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  parent_id BIGINT UNSIGNED DEFAULT 0 COMMENT '父菜单ID，0为顶级',
+  path VARCHAR(128) NOT NULL COMMENT '路由路径（如 /system 或 user）',
+  name VARCHAR(64) NOT NULL COMMENT '路由名称（大驼峰，全局唯一）',
+  component VARCHAR(128) NOT NULL COMMENT '组件标识：# 顶层布局 / ## 父级布局 / views/xxx 真实页面',
+  redirect VARCHAR(128) DEFAULT NULL COMMENT '重定向路径',
+  meta_title VARCHAR(64) NOT NULL COMMENT '菜单标题',
+  meta_icon VARCHAR(64) DEFAULT NULL COMMENT '图标（如 vi-ant-design:dashboard-filled）',
+  meta_hidden TINYINT(4) DEFAULT 0 COMMENT '是否隐藏：0否 1是',
+  meta_always_show TINYINT(4) DEFAULT 0 COMMENT '始终显示父级：0否 1是',
+  meta_no_cache TINYINT(4) DEFAULT 0 COMMENT '不缓存：0否 1是',
+  meta_affix TINYINT(4) DEFAULT 0 COMMENT '固定在多页签：0否 1是',
+  meta_no_tags_view TINYINT(4) DEFAULT 0 COMMENT '不在多页签显示：0否 1是',
+  meta_breadcrumb TINYINT(4) DEFAULT 1 COMMENT '面包屑显示：0否 1是',
+  sort_order INT DEFAULT 0 COMMENT '排序号（越小越靠前）',
+  status TINYINT(4) DEFAULT 1 COMMENT '状态：0禁用 1启用',
+  create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_name (name),
+  KEY idx_parent_id (parent_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
