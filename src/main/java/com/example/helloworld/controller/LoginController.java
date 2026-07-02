@@ -1,6 +1,7 @@
 package com.example.helloworld.controller;
 
 import com.example.helloworld.entity.User;
+import com.example.helloworld.entity.vo.UserInfoVO;
 import com.example.helloworld.mapper.LoginMapper;
 import com.example.helloworld.utils.JwtUtils;
 import com.example.helloworld.utils.Result;
@@ -12,8 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8088")
-
 public class LoginController {
 
     @Autowired
@@ -32,7 +31,9 @@ public class LoginController {
                 return Result.error().message("密码有误，请重试！");
             } else {
                 String token = JwtUtils.generateToken(user.getName());
-                return Result.ok().data("token", token).data("info", userList.get(0));
+                return Result.ok()
+                        .data("token", token)
+                        .data("info", UserInfoVO.from(userList.get(0)));
             }
         }
     }
@@ -55,7 +56,7 @@ public class LoginController {
 
     @ApiOperation("用户退出")
     @PostMapping("/logout")
-    public Result logout(@RequestBody String token){
+    public Result logout(){
         return Result.ok();
     }
 

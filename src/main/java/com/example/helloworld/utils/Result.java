@@ -14,7 +14,13 @@ public class Result {
 
     private String message;
 
-    private Map<String, Object> data = new HashMap<>();
+    /**
+     * 业务数据。
+     * 大部分场景是 key-value 的 Map（走 {@link #data(String, Object)}），
+     * 但某些接口（如 /user/menu）需要顶层 data 直接是数组/单值——
+     * 走 {@link #data(Object)} 方法把它整体替换。
+     */
+    private Object data = new HashMap<String, Object>();
 
     public Boolean getSuccess() {
         return success;
@@ -40,11 +46,11 @@ public class Result {
         this.message = message;
     }
 
-    public Map<String, Object> getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(Map<String, Object> data) {
+    public void setData(Object data) {
         this.data = data;
     }
 
@@ -92,13 +98,26 @@ public class Result {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public Result data(String key, Object value){
-        this.data.put(key, value);
+        if (!(this.data instanceof Map)) {
+            this.data = new HashMap<String, Object>();
+        }
+        ((Map<String, Object>) this.data).put(key, value);
         return this;
     }
 
     public Result data(Map<String, Object> map){
         this.setData(map);
+        return this;
+    }
+
+    /**
+     * 把 data 整体替换为任意对象（数组、单值、DTO 等）。
+     * 用于 /user/menu 这类要求 data 直接是数组的接口。
+     */
+    public Result data(Object value){
+        this.setData(value);
         return this;
     }
 

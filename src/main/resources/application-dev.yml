@@ -1,0 +1,18 @@
+spring:
+  # 开发环境：连接本机 MySQL
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/gtStore?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: "gt19970306?"
+
+  # 热部署（仅开发环境启用）
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    repair-on-migrate: true  # 自动修复 checksum 不匹配

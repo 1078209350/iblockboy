@@ -1,21 +1,25 @@
-mybatis:
-  mapperLocations: classpath*:/mapper/*.xml
-  configuration:
-    mapUnderscoreToCamelCase: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-
-# 分页配置参数
-pagehelper:
-  page-size-zero: true
-  helper-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  params: count=countSql
-
-# Flyway 数据库版本管理
 spring:
+  # 激活的 profile：本地开发用 dev，生产部署时通过环境变量或启动参数覆盖为 prod
+  # 例：java -jar app.jar --spring.profiles.active=prod
+  profiles:
+    active: dev
+
+  # 解决升级 Spring Boot 2.6 后，因循环引用导致启动时报错 BeanCurrentlyInCreationException 的问题
+  main:
+    allow-circular-references: true
+
+  # 文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # 解决 Spring Boot 2.6 以上版本 swagger 不显示的问题
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+  # Flyway 数据库版本管理
   flyway:
     enabled: true
     # 迁移脚本位置
@@ -31,3 +35,23 @@ spring:
     # 验证迁移脚本是否正确
     validate-on-migrate: true
 
+server:
+  port: 8000
+
+mybatis:
+  mapperLocations: classpath*:/mapper/*.xml
+  configuration:
+    mapUnderscoreToCamelCase: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 分页配置参数
+pagehelper:
+  page-size-zero: true
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql

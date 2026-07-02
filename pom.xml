@@ -57,11 +57,10 @@
             <version>3.4.2</version>
         </dependency>
 
-        <!-- mysql驱动依赖 -->
+        <!-- mysql驱动依赖（版本由 Spring Boot BOM 管理，2.7.3 对应 8.0.30） -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.47</version>
         </dependency>
 
         <!-- 数据连接池 druid -->

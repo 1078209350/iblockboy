@@ -31,6 +31,45 @@ public class User {
      */
     String address;
 
+    /**
+     * 昵称
+     */
+    String nickName;
+
+    /**
+     * 头像 URL
+     */
+    String avatar;
+
+    /**
+     * 角色标识（admin/guest/...）
+     */
+    String roleName;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -79,6 +118,9 @@ public class User {
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", roleName='" + roleName + '\'' +
                 '}';
     }
 }

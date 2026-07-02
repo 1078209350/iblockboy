@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @ApiOperation("获取用户")
-    @GetMapping("/user/{id}")
+    @GetMapping("/user/{id:\\d+}")
     public String getUserById(@PathVariable int id){
         System.out.println(id);
         return "根据ID获取用户信息";
@@ -27,7 +27,7 @@ public class UserController {
         return "更新用户";
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/user/{id:\\d+}")
     public String deleteById(@PathVariable int id){
         System.out.println(id);
         return "根据ID删除用户";
